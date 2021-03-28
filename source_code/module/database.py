@@ -2,9 +2,9 @@ import pymysql
 
 class Database:
     def connect(self):
-        return pymysql.connect(host="hotel-mysql", user="dev", password="dev", database="hotel_booking", charset='utf8mb4')
+        return pymysql.connect(host="hotel-mysql", user="dev", password="dev", database="hotel_booking", charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-    def read(self, id):
+    def getHotels(self, id):
         con = Database.connect(self)
         cursor = con.cursor()
 
@@ -21,13 +21,12 @@ class Database:
         finally:
             con.close()
 
-    def insert(self, data):
+    def addHotel(self):
         con = Database.connect(self)
         cursor = con.cursor()
 
         try:
-            cursor.execute("INSERT INTO hotel(name,phone,email,zip) VALUES(%s, %s, %s, %s)",
-                           (data['name'], data['phone'], data['email'], data['zip'],))
+            cursor.execute("INSERT INTO hotel(name,phone,email,zip) VALUES(%s, %s, %s, %s)", (data['name'], data['phone'], data['email'], data['zip']))
             con.commit()
             return True
         except:
@@ -36,7 +35,7 @@ class Database:
         finally:
             con.close()
 
-    def update(self, id, data):
+    def updateHotel(self, id, data):
         con = Database.connect(self)
         cursor = con.cursor()
 
@@ -51,12 +50,44 @@ class Database:
         finally:
             con.close()
 
-    def delete(self, id):
+    def deleteHotel(self, id):
         con = Database.connect(self)
         cursor = con.cursor()
 
         try:
             cursor.execute("DELETE FROM hotel where id = %s", (id,))
+            con.commit()
+            return True
+        except:
+            con.rollback()
+            return False
+        finally:
+            con.close()
+    
+    def getRooms(self, id):
+        con = Database.connect(self)
+        cursor = con.cursor()
+
+        try:
+            if id == None:
+                cursor.execute("SELECT * FROM room order by hid asc")
+            else:
+                cursor.execute(
+                    "SELECT * FROM room where rid = %s order by hid asc", (id,))
+
+            return cursor.fetchall()
+        except:
+            return ()
+        finally:
+            con.close()
+
+    def addRoom(self, data):
+        con = Database.connect(self)
+        cursor = con.cursor()
+
+        try:
+            cursor.execute("INSERT INTO room(hid, rtype, rnumber, price ) VALUES(%s, %s, %s, %s)",
+                           (data['hid'], data['rtype'], data['rnumber'], data['price'],))
             con.commit()
             return True
         except:
