@@ -68,9 +68,42 @@ def addRoom():
     else:
         return "DB error",500
 
+# Images
+@app.route("/images")
+def list_images():
+    folder_str = {}
+    for folder in os.listdir(UPLOAD_DIRECTORY):
+        path = os.path.join(UPLOAD_DIRECTORY, folder)
+        folder_str[folder] = []
+        for filename in os.listdir(path):
+            folder_str[folder].append(filename)
+
+    return jsonify(folder_str)
+
+@app.route("/images/<path:path>")
+def get_image(path):
+    return send_from_directory(UPLOAD_DIRECTORY, path, as_attachment=True)
+
+
+@app.route("/addImage/<int:id>/", methods=["POST"])
+def post_file(id):
+    data = db.getHotels(id)
+
+    if len(data) == 0:
+        return "No Hotel found", 204
+    else:
+        fh = request.files['file']
+        image_folder = os.path.join(UPLOAD_DIRECTORY,str(id))
+        if not os.path.exists(image_folder):
+            os.makedirs(image_folder)
+        image_name = str(len(os.listdir(image_folder))+1) + '.jpg'
+        image_path = os.path.join(image_folder, image_name)
+        fh.save(image_path)
+        return "Image added", 201
+
 @app.errorhandler(404)
 def page_not_found(error):
     return "PAGE NOT FOUND", 404
 
 if __name__ == '__main__':
-    app.run(port=8181, host="0.0.0.0")  
+    app.run(port=8181, host="0.0.0.0",debug=True)
