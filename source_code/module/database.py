@@ -95,3 +95,37 @@ class Database:
             return False
         finally:
             con.close()
+    
+    def getBookings(self,id):
+        con = Database.connect(self)
+        cursor = con.cursor()
+
+        try:
+            if id == None:
+                cursor.execute("SELECT * FROM bookings;")
+            else:
+                cursor.execute(
+                    "SELECT * FROM bookings where bid = %s", (id,))
+
+            return cursor.fetchall()
+        except:
+            return ()
+        finally:
+            con.close()
+    
+    def checkAvailability(self,rid,fromdate,todate):
+        con = Database.connect(self)
+        cursor = con.cursor()
+        try:
+            cursor.execute("SELECT * FROM bookings where rid = %s AND ( `from` BETWEEN %s AND %s OR `to` BETWEEN %s AND %s);",(rid,fromdate,todate,fromdate,todate))
+            if len(list(cursor.fetchall())) == 0:
+                return True
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return ()
+        finally:
+            con.close()
+
+

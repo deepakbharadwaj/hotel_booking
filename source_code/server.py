@@ -12,7 +12,7 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 @app.route('/', methods = ['GET'])
 def test():
-    return "Welcome To Hotel Booking Application", 200
+    return "Welcome To Hotel Booking Application!!!", 200
 
 @app.route('/getHotels', methods = ['GET'])
 def getHotels():
@@ -100,6 +100,27 @@ def post_file(id):
         image_path = os.path.join(image_folder, image_name)
         fh.save(image_path)
         return "Image added", 201
+
+# Bookings
+@app.route('/getBookings', methods = ['GET'])
+def getBookings():
+    return jsonify(db.getBookings(None)),200
+
+@app.route('/getBooking/<int:id>/', methods = ['GET'])
+def getBooking(id):
+    return jsonify(db.getBookings(id)),200
+
+@app.route('/checkAvailability', methods = ['POST'])
+def checkAvailability():
+    params = request.json
+    data = db.getRooms(int(params['rid']))
+    if len(data) == 0:
+        return "No such Room found", 200
+    else:
+        if db.checkAvailability(int(params['rid']),params['from'],params['to']):
+            return "Room Available",200
+        else:
+            return "Room not Available",200
 
 @app.errorhandler(404)
 def page_not_found(error):

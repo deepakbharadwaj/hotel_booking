@@ -13,8 +13,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-app
-    volumes: 
-      - /Users/i349201/Documents/projects/hotel_booking/source_code:/app
     depends_on:
       - hotel-mysql
     ports:

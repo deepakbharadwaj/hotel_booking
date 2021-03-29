@@ -1,3 +1,5 @@
+SET time_zone = '+00:00';
+
 CREATE TABLE IF NOT EXISTS `hotel` (
   `hid` int(5) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -25,7 +27,8 @@ CREATE TABLE IF NOT EXISTS `room` (
   `price` varchar(50) NOT NULL,
   `image` varchar(255),
   PRIMARY KEY (`rid`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
+AUTO_INCREMENT=1;
 
 INSERT INTO `room` (`rid`, `hid`, `rtype`, `rnumber`, `price` ) VALUES (1, 1, 'type1', '101', '1000');
 INSERT INTO `room` (`rid`, `hid`, `rtype`, `rnumber`, `price` ) VALUES (2, 1, 'type2', '102', '2000');
@@ -37,3 +40,24 @@ INSERT INTO `room` (`rid`, `hid`, `rtype`, `rnumber`, `price` ) VALUES (7, 4, 't
 INSERT INTO `room` (`rid`, `hid`, `rtype`, `rnumber`, `price` ) VALUES (8, 5, 'type8', '108', '8000');
 
 ALTER TABLE `room` MODIFY `rid` int(5) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `bookings` (
+  `bid` int(5) NOT NULL,
+  `rid` int(5) NOT NULL,
+  `from` date NOT NULL,
+  `to` date NOT NULL,
+  `cname` varchar(20) NOT NULL,
+  `rname` varchar(20) NOT NULL,
+  PRIMARY KEY (`bid`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
+AUTO_INCREMENT=1;
+
+ALTER TABLE `bookings` MODIFY `bid` int(5) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `bookings` (`bid`,`rid`,`from`,`to`,`cname`,`rname`) VALUES (1,1,'2020-01-01','2020-01-05', 'Customer1', 'Receptioninst'),
+(2,1,'2020-01-09','2020-01-10', 'Customer1', 'Receptioninst'),
+(3,1,'2020-02-01','2020-02-05', 'Customer2', 'Receptioninst'),
+(4,2,'2020-01-01','2020-01-05', 'Customer3', 'Receptioninst'),
+(5,2,'2020-04-01','2020-04-05', 'Customer4', 'Receptioninst'),
+(6,2,'2020-05-01','2020-05-05', 'Customer5', 'Receptioninst'),
+(7,2,'2020-06-01','2020-06-05', 'Customer6', 'Receptioninst');
