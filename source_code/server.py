@@ -24,7 +24,7 @@ def getHotel(id):
 
 @app.route('/addHotel', methods = ['POST'])
 def addHotel():
-    if db.addHotel():
+    if db.addHotel(request.json):
         return "Hotel Added", 201
     else:
         return "DB error", 500

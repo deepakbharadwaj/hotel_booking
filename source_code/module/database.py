@@ -21,7 +21,7 @@ class Database:
         finally:
             con.close()
 
-    def addHotel(self):
+    def addHotel(self,data):
         con = Database.connect(self)
         cursor = con.cursor()
 
